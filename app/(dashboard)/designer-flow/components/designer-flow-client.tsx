@@ -46,9 +46,18 @@ export default function DesignerFlowClientComponent({ initialJobs, designerProfi
   const [isLoading, setIsLoading] = useState(false);
 
   // --- Event Handlers ---
-  const handleRefresh = () => {
-    console.log('TODO: Refresh data');
-    // Likely involves calling a server action or re-fetching via router.refresh() or client-side library
+  const handleRefresh = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch updated jobs data
+      const response = await fetch('/api/jobs');
+      const updatedJobs = await response.json();
+      setJobs(updatedJobs);
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSaveChanges = () => {
@@ -56,10 +65,32 @@ export default function DesignerFlowClientComponent({ initialJobs, designerProfi
     // Likely involves calling a server action with unsavedChanges payload
   };
 
-  const handleAddJob = (newJobData: any) => {
-    console.log('TODO: Handle adding job - likely done via Server Action called from Dialog');
-    setIsNewJobDialogOpen(false);
-    // Refresh data after successful add
+  const handleAddJob = async (newJobData: any) => {
+    setIsLoading(true);
+    try {
+      // Add the new job
+      const response = await fetch('/api/jobs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newJobData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to add job');
+      }
+
+      // Get the newly added job from the response
+      const newJob = await response.json();
+      
+      // Update the jobs state with the new job
+      setJobs(prevJobs => [...prevJobs, newJob]);
+      
+      setIsNewJobDialogOpen(false);
+    } catch (error) {
+      console.error('Error adding job:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // --- Filtering Logic ---
