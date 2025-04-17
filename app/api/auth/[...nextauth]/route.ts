@@ -27,7 +27,6 @@ const { handlers } = NextAuth({
 
         const user = await prisma.user.findFirst({
           where: { email: credentials.email },
-          select: { id: true, email: true, role: true, password: true }
         })
 
         if (!user) return null
