@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Trash2, Pencil } from 'lucide-react';
-import { WorkOrderWithDetails, ItemFormData, CreateWorkOrderData, UpdateWorkOrderItemsData } from '../actions'; // Import types
 
 // --- Zod Schema Definition ---
 
