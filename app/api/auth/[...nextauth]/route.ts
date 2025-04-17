@@ -34,7 +34,7 @@ const { handlers } = NextAuth({
         // IMPORTANT: Replace this with actual bcrypt.compare
         // const isValid = await bcrypt.compare(credentials.password, user.password);
         // if (!isValid) return null;
-        const isValid = credentials.password === user.password; // Placeholder
+        const isValid = credentials.password === user.encrypted_password; // Placeholder
         if (!isValid) return null;
 
         // Return object matching User type + custom fields
