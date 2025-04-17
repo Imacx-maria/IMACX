@@ -29,10 +29,6 @@ export function CalendarHeatmap({
 }: CalendarHeatmapProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   
-  // Get days for the current month
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
-  
   // Get the start of the first week (might be in previous month)
   const firstDayOfMonth = startOfMonth(currentMonth);
   const startDate = startOfWeek(firstDayOfMonth);
