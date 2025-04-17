@@ -1,6 +1,6 @@
+import { PrismaAdapter } from "@auth/prisma-adapter"
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { PrismaAdapter } from "@auth/prisma-adapter"
 
 import { prisma } from "@/lib/db/prisma"
 
@@ -52,7 +52,7 @@ const { handlers } = NextAuth({
       if (user) {
         token.id = user.id
         // Cast user to include role, assuming authorize returns it
-        token.role = (user as any).role 
+        token.role = (user as any).role
         // Other default fields like name, email, picture are usually handled automatically
       }
       return token

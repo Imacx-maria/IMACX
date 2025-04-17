@@ -45,10 +45,10 @@ export async function findById<T>(
 /**
  * Find a record by a specific field
  */
-export async function findByField<T>(
-  model: any,
+export async function findByField<T, M extends keyof typeof prisma>(
+  model: M,
   field: string,
-  value: any,
+  value: unknown,
   select?: Record<string, boolean>
 ): Promise<T | null> {
   const where = { [field]: value };

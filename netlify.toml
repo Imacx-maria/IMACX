@@ -1,5 +1,5 @@
 [build]
-  command = "CI=false npm run build"
+  command = "npx prisma generate && CI=false npm run build"
   publish = ".next"
 
 [build.environment]
@@ -7,10 +7,15 @@
   NEXT_TELEMETRY_DISABLED = "1"
   NEXT_USE_NETLIFY_EDGE = "true"
   NEXT_FORCE_EDGE_IMAGES = "true"
+  NETLIFY_DISABLE_CACHE = "true"
+  # Completely disable Go
+  NETLIFY_GO_SKIP = "true"
+  GO_SKIP_INSTALL = "true"
 
-# Completely disable Go installation since it's not needed
+# Explicitly skip Go installation
 [build.lifecycle]
   onInit = "echo 'Completely skipping Go installation - not required for this project'"
+  onBuild = "echo 'No Go build steps needed'"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"

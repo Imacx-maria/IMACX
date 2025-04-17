@@ -1,16 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
-  fetchMaterialTypes,
-  fetchMaterialsByType,
+  fetchAllCalculations,
   fetchCharacteristicsByTypeAndMaterial,
   fetchColorsByTypeAndMaterialAndCharacteristic,
   fetchMachines,
   fetchMaterialPrice,
-  fetchMachinePrice,
-  saveCalculation,
-  loadCalculation,
-  fetchAllCalculations, // Added for fetching table data
+  fetchMaterialTypes,
+  fetchMaterialsByType, // Added for fetching table data
   generateCalculationId,
+  loadCalculation,
+  saveCalculation,
   type CalculationData
 } from '../supabase/price-calculation';
 
@@ -48,20 +47,20 @@ export type CalculationResults = {
 export function useMaterialsData() {
   // Available options for dropdowns
   const [tipoOptions, setTipoOptions] = useState<string[]>([]);
-  
+
   // Separate options for each material panel
   const [material1Options, setMaterial1Options] = useState<string[]>([]);
   const [material1CaracteristicaOptions, setMaterial1CaracteristicaOptions] = useState<string[]>([]);
   const [material1CorOptions, setMaterial1CorOptions] = useState<string[]>([]);
-  
+
   const [material2Options, setMaterial2Options] = useState<string[]>([]);
   const [material2CaracteristicaOptions, setMaterial2CaracteristicaOptions] = useState<string[]>([]);
   const [material2CorOptions, setMaterial2CorOptions] = useState<string[]>([]);
-  
+
   const [material3Options, setMaterial3Options] = useState<string[]>([]);
   const [material3CaracteristicaOptions, setMaterial3CaracteristicaOptions] = useState<string[]>([]);
   const [material3CorOptions, setMaterial3CorOptions] = useState<string[]>([]);
-  
+
   // Loading states
   const [isLoadingTipos, setIsLoadingTipos] = useState(false);
   const [isLoadingMaterials, setIsLoadingMaterials] = useState(false);
@@ -92,7 +91,7 @@ export function useMaterialsData() {
   const [material3CorError, setMaterial3CorError] = useState<string | null>(null);
   const [material3CorEmpty, setMaterial3CorEmpty] = useState(false);
 
-  
+
   // Material selections for each panel
   const [material1, setMaterial1] = useState<MaterialSelection>({
     tipo: '',
@@ -100,14 +99,14 @@ export function useMaterialsData() {
     caracteristica: '',
     cor: ''
   });
-  
+
   const [material2, setMaterial2] = useState<MaterialSelection>({
     tipo: '',
     material: '',
     caracteristica: '',
     cor: ''
   });
-  
+
   const [material3, setMaterial3] = useState<MaterialSelection>({
     tipo: '',
     material: '',
@@ -128,7 +127,7 @@ export function useMaterialsData() {
         setIsLoadingTipos(false);
       }
     };
-    
+
     loadTipos();
   }, []);
 
@@ -138,7 +137,7 @@ export function useMaterialsData() {
       setMaterial1Options([]);
       return;
     }
-    
+
     setIsLoadingMaterials(true);
     try {
       const materials = await fetchMaterialsByType(tipo);
@@ -156,7 +155,7 @@ export function useMaterialsData() {
       setMaterial2Options([]);
       return;
     }
-    
+
     setIsLoadingMaterials(true);
     try {
       const materials = await fetchMaterialsByType(tipo);
@@ -174,7 +173,7 @@ export function useMaterialsData() {
       setMaterial3Options([]);
       return;
     }
-    
+
     setIsLoadingMaterials(true);
     try {
       const materials = await fetchMaterialsByType(tipo);
@@ -192,7 +191,7 @@ export function useMaterialsData() {
       setMaterial1CaracteristicaOptions([]);
       return;
     }
-    
+
     setIsLoadingCaracteristicas(true);
     try {
       const caracteristicas = await fetchCharacteristicsByTypeAndMaterial(tipo, material);
@@ -210,7 +209,7 @@ export function useMaterialsData() {
       setMaterial2CaracteristicaOptions([]);
       return;
     }
-    
+
     setIsLoadingCaracteristicas(true);
     try {
       const caracteristicas = await fetchCharacteristicsByTypeAndMaterial(tipo, material);
@@ -228,7 +227,7 @@ export function useMaterialsData() {
       setMaterial3CaracteristicaOptions([]);
       return;
     }
-    
+
     setIsLoadingCaracteristicas(true);
     try {
       const caracteristicas = await fetchCharacteristicsByTypeAndMaterial(tipo, material);
@@ -246,7 +245,7 @@ export function useMaterialsData() {
       setMaterial1CorOptions([]);
       return;
     }
-    
+
     setIsLoadingCores(true);
     try {
       const cores = await fetchColorsByTypeAndMaterialAndCharacteristic(tipo, material, caracteristica);
@@ -264,7 +263,7 @@ export function useMaterialsData() {
       setMaterial2CorOptions([]);
       return;
     }
-    
+
     setIsLoadingCores(true);
     try {
       const cores = await fetchColorsByTypeAndMaterialAndCharacteristic(tipo, material, caracteristica);
@@ -282,7 +281,7 @@ export function useMaterialsData() {
       setMaterial3CorOptions([]);
       return;
     }
-    
+
     setIsLoadingCores(true);
     try {
       const cores = await fetchColorsByTypeAndMaterialAndCharacteristic(tipo, material, caracteristica);
@@ -300,11 +299,11 @@ export function useMaterialsData() {
     setMaterialState: React.Dispatch<React.SetStateAction<MaterialSelection>>
   ) => {
     const { tipo, material, caracteristica, cor } = materialState;
-    
+
     if (!tipo || !material || !caracteristica || !cor) {
       return;
     }
-    
+
     try {
       const { id, price } = await fetchMaterialPrice(tipo, material, caracteristica, cor);
       setMaterialState(prev => ({
@@ -321,7 +320,7 @@ export function useMaterialsData() {
   const updateMaterial1 = useCallback((field: keyof MaterialSelection, value: string) => {
     setMaterial1(prev => {
       const newState = { ...prev, [field]: value };
-      
+
       // Reset dependent fields
       if (field === 'tipo') {
         newState.material = '';
@@ -358,7 +357,7 @@ export function useMaterialsData() {
           loadMaterialPrice(newState, setMaterial1);
         }
       }
-      
+
       return newState;
     });
   }, [loadMaterials1, loadCaracteristicas1, loadCores1, loadMaterialPrice]);
@@ -367,7 +366,7 @@ export function useMaterialsData() {
   const updateMaterial2 = useCallback((field: keyof MaterialSelection, value: string) => {
     setMaterial2(prev => {
       const newState = { ...prev, [field]: value };
-      
+
       // Reset dependent fields
       if (field === 'tipo') {
         newState.material = '';
@@ -404,7 +403,7 @@ export function useMaterialsData() {
           loadMaterialPrice(newState, setMaterial2);
         }
       }
-      
+
       return newState;
     });
   }, [loadMaterials2, loadCaracteristicas2, loadCores2, loadMaterialPrice]);
@@ -413,7 +412,7 @@ export function useMaterialsData() {
   const updateMaterial3 = useCallback((field: keyof MaterialSelection, value: string) => {
     setMaterial3(prev => {
       const newState = { ...prev, [field]: value };
-      
+
       // Reset dependent fields
       if (field === 'tipo') {
         newState.material = '';
@@ -450,7 +449,7 @@ export function useMaterialsData() {
           loadMaterialPrice(newState, setMaterial3);
         }
       }
-      
+
       return newState;
     });
   }, [loadMaterials3, loadCaracteristicas3, loadCores3, loadMaterialPrice]);
@@ -467,23 +466,23 @@ export function useMaterialsData() {
     material3Options,
     material3CaracteristicaOptions,
     material3CorOptions,
-    
+
     // Loading states
     isLoadingTipos,
     isLoadingMaterials,
     isLoadingCaracteristicas,
     isLoadingCores,
-    
+
     // Material selections
     material1,
     material2,
     material3,
-    
+
     // Update functions
     updateMaterial1,
     updateMaterial2,
     updateMaterial3,
-    
+
     // Set functions (for loading saved calculations)
     setMaterial1,
     setMaterial2,
@@ -516,7 +515,7 @@ export function useMachinesData() {
         setIsLoading(false);
       }
     };
-    
+
     loadMachines();
   }, []);
 
@@ -582,27 +581,27 @@ export function useCalculations() {
   ) => {
     // Filter out materials without prices
     const validMaterials = materials.filter(m => m.price !== undefined);
-    
+
     // Calculate total material cost
     const custoTotalMateriais = validMaterials.reduce((sum, material) => {
       return sum + (material.price || 0) * metrosQuadradosValue;
     }, 0);
-    
+
     // Calculate machine cost
     const machinePrice = machine ? machine.valor_m2 * (machine.is4_4 ? 2 : 1) : 0;
     const custoTotalMaquina = machinePrice * metrosQuadradosValue;
-    
+
     // Calculate total liquid cost
     const custoLiquidoTotal = custoTotalMateriais + custoTotalMaquina;
-    
+
     // Calculate final price with margin
     const precoFinal = custoLiquidoTotal * (1 + marginValue / 100);
-    
+
     // Calculate percentage difference
-    const diferencaPercentual = precoFinal > 0 
-      ? ((currentPriceValue - precoFinal) / precoFinal) * 100 
+    const diferencaPercentual = precoFinal > 0
+      ? ((currentPriceValue - precoFinal) / precoFinal) * 100
       : 0;
-    
+
     setCalculationResults({
       custoTotalMateriais,
       custoTotalMaquina,
@@ -610,7 +609,7 @@ export function useCalculations() {
       precoFinal,
       diferencaPercentual
     });
-    
+
     return {
       custoTotalMateriais,
       custoTotalMaquina,
@@ -629,22 +628,22 @@ export function useCalculations() {
     results: CalculationResults
   ) => {
     console.log('saveCalculationToDb called with:', { material1, material2, material3, machine, results });
-    
+
     if (!machine) {
       console.error('Machine selection is required');
       throw new Error('Machine selection is required');
     }
-    
+
     setIsSaving(true);
-    
+
     try {
       // Generate a new calculation ID if not already set
       const calcId = calculationId || generateCalculationId();
       console.log('Using calculation ID:', calcId);
-      
+
       const calculationData: CalculationData = {
         calculation_id: calcId,
-        
+
         // Material 1
         material1_id: material1.id,
         material1_tipo: material1.tipo,
@@ -652,7 +651,7 @@ export function useCalculations() {
         material1_caracteristica: material1.caracteristica,
         material1_cor: material1.cor,
         material1_valor_m2: material1.price,
-        
+
         // Material 2 (if selected)
         ...(material2.tipo && {
           material2_id: material2.id,
@@ -662,7 +661,7 @@ export function useCalculations() {
           material2_cor: material2.cor,
           material2_valor_m2: material2.price,
         }),
-        
+
         // Material 3 (if selected)
         ...(material3.tipo && {
           material3_id: material3.id,
@@ -672,13 +671,13 @@ export function useCalculations() {
           material3_cor: material3.cor,
           material3_valor_m2: material3.price,
         }),
-        
+
         // Machine
         maquina_id: machine.integer_id,
         maquina_nome: machine.maquina,
         maquina_valor_m2: machine.valor_m2 * (machine.is4_4 ? 2 : 1),
         maquina_uuid: machine.id,
-        
+
         // Calculation fields
         metros_quadrados: metrosQuadrados,
         custo_total_materiais: results.custoTotalMateriais,
@@ -690,9 +689,9 @@ export function useCalculations() {
         diferenca_percentual: results.diferencaPercentual,
         notas: notes
       };
-      
+
       console.log('Calculation data prepared:', calculationData);
-      
+
       try {
         const savedCalculation = await saveCalculation(calculationData);
         console.log('Calculation saved successfully:', savedCalculation);
@@ -725,42 +724,39 @@ export function useCalculations() {
     }
   ) => {
     setIsLoading(true);
-    console.log('Loading calculation from DB with ID:', calcId);
-    
     try {
       const calculation = await loadCalculation(calcId);
-      console.log('Calculation loaded:', calculation);
-      
+
       // Set calculation ID
       setCalculationId(calculation.calculation_id);
-      
+
       // Use the update functions that handle cascading loads
       if (calculation.material1_tipo) {
         console.log('Setting material 1:', calculation.material1_tipo);
-        
+
         // Use the update functions if provided
         const updateMaterial1 = updateFunctions?.updateMaterial1;
         if (updateMaterial1) {
           // Set tipo first
           updateMaterial1('tipo', calculation.material1_tipo || '');
-          
+
           // Wait a bit for materials to load
           await new Promise(resolve => setTimeout(resolve, 300));
-          
+
           // Set material
           if (calculation.material1_material) {
             updateMaterial1('material', calculation.material1_material || '');
-            
+
             // Wait a bit for caracteristicas to load
             await new Promise(resolve => setTimeout(resolve, 300));
-            
+
             // Set caracteristica
             if (calculation.material1_caracteristica) {
               updateMaterial1('caracteristica', calculation.material1_caracteristica || '');
-              
+
               // Wait a bit for cores to load
               await new Promise(resolve => setTimeout(resolve, 300));
-              
+
               // Set cor
               if (calculation.material1_cor) {
                 updateMaterial1('cor', calculation.material1_cor || '');
@@ -779,33 +775,33 @@ export function useCalculations() {
           });
         }
       }
-      
+
       // Set material 2 using update function
       if (calculation.material2_tipo) {
         console.log('Setting material 2:', calculation.material2_tipo);
-        
+
         const updateMaterial2 = updateFunctions?.updateMaterial2;
         if (updateMaterial2) {
           // Set tipo first
           updateMaterial2('tipo', calculation.material2_tipo || '');
-          
+
           // Wait a bit for materials to load
           await new Promise(resolve => setTimeout(resolve, 300));
-          
+
           // Set material
           if (calculation.material2_material) {
             updateMaterial2('material', calculation.material2_material || '');
-            
+
             // Wait a bit for caracteristicas to load
             await new Promise(resolve => setTimeout(resolve, 300));
-            
+
             // Set caracteristica
             if (calculation.material2_caracteristica) {
               updateMaterial2('caracteristica', calculation.material2_caracteristica || '');
-              
+
               // Wait a bit for cores to load
               await new Promise(resolve => setTimeout(resolve, 300));
-              
+
               // Set cor
               if (calculation.material2_cor) {
                 updateMaterial2('cor', calculation.material2_cor || '');
@@ -824,33 +820,33 @@ export function useCalculations() {
           });
         }
       }
-      
+
       // Set material 3 using update function
       if (calculation.material3_tipo) {
         console.log('Setting material 3:', calculation.material3_tipo);
-        
+
         const updateMaterial3 = updateFunctions?.updateMaterial3;
         if (updateMaterial3) {
           // Set tipo first
           updateMaterial3('tipo', calculation.material3_tipo || '');
-          
+
           // Wait a bit for materials to load
           await new Promise(resolve => setTimeout(resolve, 300));
-          
+
           // Set material
           if (calculation.material3_material) {
             updateMaterial3('material', calculation.material3_material || '');
-            
+
             // Wait a bit for caracteristicas to load
             await new Promise(resolve => setTimeout(resolve, 300));
-            
+
             // Set caracteristica
             if (calculation.material3_caracteristica) {
               updateMaterial3('caracteristica', calculation.material3_caracteristica || '');
-              
+
               // Wait a bit for cores to load
               await new Promise(resolve => setTimeout(resolve, 300));
-              
+
               // Set cor
               if (calculation.material3_cor) {
                 updateMaterial3('cor', calculation.material3_cor || '');
@@ -869,7 +865,7 @@ export function useCalculations() {
           });
         }
       }
-      
+
       // Set machine
       if (calculation.maquina_uuid) {
         console.log('Setting machine:', calculation.maquina_uuid);
@@ -884,13 +880,13 @@ export function useCalculations() {
           console.warn('Machine not found in available machines:', calculation.maquina_uuid);
         }
       }
-      
+
       // Set other fields
       setMargin(calculation.margem || 35);
       setCurrentPrice(calculation.preco_atual || 0);
       setMetrosQuadrados(calculation.metros_quadrados || 1);
       setNotes(calculation.notas || '');
-      
+
       // Set calculation results
       setCalculationResults({
         custoTotalMateriais: calculation.custo_total_materiais || 0,
@@ -899,11 +895,10 @@ export function useCalculations() {
         precoFinal: calculation.preco_final || 0,
         diferencaPercentual: calculation.diferenca_percentual || 0
       });
-      
+
       return calculation;
     } catch (error) {
       console.error('Error loading calculation:', error);
-      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -915,23 +910,23 @@ export function useCalculations() {
     console.log('Starting to fetch price table data from Supabase...');
     try {
       // fetchAllCalculations will be defined in ../supabase/price-calculation
-      const data = await fetchAllCalculations(); 
+      const data = await fetchAllCalculations();
       console.log(`Successfully fetched ${data.length} records for price table`);
       setPriceTableData(data);
     } catch (error) {
       console.error('Error fetching price table data:', error);
-      
+
       // More detailed error checking
       if (error instanceof Error) {
         console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
       }
-      
+
       // Check if it might be a Supabase connection issue
       if (error instanceof Error && error.message.includes('network')) {
         console.error('This appears to be a network connection issue with Supabase');
       }
-      
+
       // If we got here, let the UI know we failed to load data
       setPriceTableData([]); // Set to empty array on error
     } finally {

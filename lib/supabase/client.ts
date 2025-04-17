@@ -9,7 +9,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error(
     'Missing Supabase environment variables! Make sure NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY are set in your .env file.'
   );
-  
+
   // In development, provide more helpful error message
   if (process.env.NODE_ENV === 'development') {
     console.error('Current environment variables:', {
@@ -33,9 +33,6 @@ export const getServiceRoleClient = () => {
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
   return createClient(supabaseUrl, supabaseServiceRoleKey);
 };
-
-// Helper function to check if we're on the server
-export const isServer = () => typeof window === 'undefined';
 
 // Helper functions for common Supabase operations
 

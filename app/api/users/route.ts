@@ -14,8 +14,7 @@ console.log('API Route Environment Check:', {
 });
 
 if (!supabaseUrl || !supabaseServiceRoleKey) {
-  console.error('Missing Supabase environment variables');
-  throw new Error('Missing required environment variables');
+  console.error('Missing required environment variables');
 }
 
 // Create a Supabase client with service role
@@ -50,10 +49,10 @@ export async function POST(request: Request) {
       if (!first_name) missingFields.push('first_name');
       if (!last_name) missingFields.push('last_name');
       if (!role_id) missingFields.push('role_id');
-      
-      return NextResponse.json({ 
-        error: 'Missing required fields', 
-        details: `Missing: ${missingFields.join(', ')}` 
+
+      return NextResponse.json({
+        error: 'Missing required fields',
+        details: `Missing: ${missingFields.join(', ')}`
       }, { status: 400 });
     }
 
@@ -72,15 +71,15 @@ export async function POST(request: Request) {
 
     if (authError) {
       console.error('Auth error:', authError);
-      return NextResponse.json({ 
-        error: authError.message 
+      return NextResponse.json({
+        error: authError.message
       }, { status: 400 });
     }
 
     if (!authData?.user) {
       console.error('No user data returned from auth');
-      return NextResponse.json({ 
-        error: 'Failed to create user' 
+      return NextResponse.json({
+        error: 'Failed to create user'
       }, { status: 500 });
     }
 
@@ -107,9 +106,9 @@ export async function POST(request: Request) {
         console.error('Error creating profile manually:', insertError);
         // Delete the auth user since profile creation failed
         await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
-        return NextResponse.json({ 
+        return NextResponse.json({
           error: 'Failed to create user profile',
-          details: insertError.message 
+          details: insertError.message
         }, { status: 500 });
       }
     }
@@ -125,7 +124,7 @@ export async function POST(request: Request) {
       console.error('Final profile verification failed:', finalProfileError);
       // Clean up: delete auth user if profile creation failed
       await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
-      return NextResponse.json({ 
+      return NextResponse.json({
         error: 'Failed to verify user profile creation',
         details: finalProfileError?.message || 'Profile not found'
       }, { status: 500 });
@@ -140,9 +139,9 @@ export async function POST(request: Request) {
 
   } catch (error: any) {
     console.error('Unexpected error:', error);
-    return NextResponse.json({ 
+    return NextResponse.json({
       error: 'Server error',
-      details: error.message 
+      details: error.message
     }, { status: 500 });
   }
 }
