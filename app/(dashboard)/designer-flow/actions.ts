@@ -76,9 +76,25 @@ export async function getWorkOrders(
       .order('prioridade', { ascending: false })
       .order('data_in', { ascending: false });
 
-    // TODO: Apply filters based on the 'filters' object
-    // Example: if (filters.status === 'open') query = query.is('data_saida', null);
-    // Example: if (filters.designerId) query = query.eq('profile_id', filters.designerId);
+    // Apply filters
+    if (filters.status === 'open') {
+      query = query.is('data_saida', null);
+    } else if (filters.status === 'closed') {
+      query = query.not('data_saida', 'is', null);
+    }
+
+    if (filters.designerId) {
+      query = query.eq('profile_id', filters.designerId);
+    }
+
+    if (filters.foNumber) {
+      query = query.eq('numero_fo', parseInt(filters.foNumber));
+    }
+
+    if (filters.itemDescription) {
+      // Join with items table to filter by item description
+      query = query.contains('items.descricao', filters.itemDescription);
+    }
 
     const { data: workOrders, error } = await query;
 
