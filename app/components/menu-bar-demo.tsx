@@ -111,7 +111,7 @@ const menuItems = [
 export function MenuBarDemo() {
   const [activeItem, setActiveItem] = useState<string>("Dashboard")
   const router = useRouter()
-  const { logout } = useAuth()
+  useAuth()
 
   const handleItemClick = async (label: string) => {
     setActiveItem(label)
