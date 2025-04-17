@@ -13,14 +13,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
@@ -291,7 +283,7 @@ export default function ComponentsPage() {
                   </DialogFooter>
                 </DialogContent>
               </Dialog> */}
-              <DropdownMenu>
+              {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild><Button variant="outline" className="mb-6">Dropdown Menu</Button></DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -302,7 +294,7 @@ export default function ComponentsPage() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Log out</DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
               {/* <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline">Sheet</Button>
