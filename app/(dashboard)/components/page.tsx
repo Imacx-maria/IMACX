@@ -174,6 +174,22 @@ export default function ComponentsPage() {
                <div className="space-y-2 mb-6">
                  <Label>Progress</Label>
                  <Progress value={progress} className="w-[60%]" />
+                 <div className="flex gap-2 mt-2">
+                   <Button 
+                     variant="outline" 
+                     size="sm"
+                     onClick={() => setProgress((prev) => Math.max(0, prev - 10))}
+                   >
+                     Decrease
+                   </Button>
+                   <Button 
+                     variant="outline" 
+                     size="sm"
+                     onClick={() => setProgress((prev) => Math.min(100, prev + 10))}
+                   >
+                     Increase
+                   </Button>
+                 </div>
                </div>
                <div className="space-y-2 mb-6">
                  <Label>Skeleton</Label>
