@@ -80,21 +80,9 @@ function DashboardCard({
 export default function Home() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
-  const [userDetails, setUserDetails] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    role: ""
-  });
 
   useEffect(() => {
     if (user && user.profile) {
-      setUserDetails({
-        email: user.email,
-        firstName: user.profile.firstName,
-        lastName: user.profile.lastName,
-        role: user.profile.role.name
-      });
       console.log("User authenticated on home page:", user);
     } else if (!isLoading && !user) {
         // Redirect if not loading and not logged in
