@@ -33,16 +33,11 @@ export default function DesignerFlowClientComponent({ initialJobs, designerProfi
 
   // Filters State
   const [filterOpen, setFilterOpen] = useState(true);
-  const [filterFO, setFilterFO] = useState('');
-  const [filterItem, setFilterItem] = useState('');
-
+  
   // Modal State
   const [isNewJobDialogOpen, setIsNewJobDialogOpen] = useState(false);
 
-  // Unsaved Changes State (more complex, might need different approach)
-  const [unsavedChanges, setUnsavedChanges] = useState({}); // Placeholder
-
-  // Loading/Submitting State
+  // Loading State
   const [isLoading, setIsLoading] = useState(false);
 
   // --- Event Handlers ---
@@ -60,57 +55,31 @@ export default function DesignerFlowClientComponent({ initialJobs, designerProfi
     }
   };
 
-  const handleSaveChanges = () => {
-    console.log('TODO: Save changes', unsavedChanges);
-    // Likely involves calling a server action with unsavedChanges payload
-  };
-
-  const handleAddJob = async (newJobData: any) => {
-    setIsLoading(true);
-    try {
-      // Add the new job
-      const response = await fetch('/api/jobs', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newJobData),
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to add job');
-      }
-
-      // Get the newly added job from the response
-      const newJob = await response.json();
-      
-      // Update the jobs state with the new job
-      setJobs(prevJobs => [...prevJobs, newJob]);
-      
-      setIsNewJobDialogOpen(false);
-    } catch (error) {
-      console.error('Error adding job:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // --- Filtering Logic ---
   const filteredJobs = React.useMemo(() => {
     return jobs.filter(job => {
       if (filterOpen && job.paginacao) return false; // Assuming 'paginacao' means completed
-      if (filterFO && (!job.numero_fo || !job.numero_fo.toString().includes(filterFO))) return false;
-      if (filterItem && (!job.item || !job.item.toLowerCase().includes(filterItem.toLowerCase()))) return false;
       return true;
     });
-  }, [jobs, filterOpen, filterFO, filterItem]);
+  }, [jobs, filterOpen]);
 
   // --- Render Logic ---
   return (
     <div>
-      {/* TODO: Implement HeaderControls Component */}
       <div className="mb-4 p-4 border rounded bg-card text-card-foreground">
         <p>Header Controls Placeholder</p>
-        {/* Filters (Switch, Input), Buttons (Add, Refresh, Save) go here */}
         <div className="flex items-center space-x-4 mb-4">
+          {/* Open/Closed Filter Toggle */}
+          <div className="flex items-center space-x-2">
+            <label className="text-sm font-medium">Show Closed</label>
+            <input
+              type="checkbox"
+              checked={!filterOpen}
+              onChange={(e) => setFilterOpen(!e.target.checked)}
+              className="form-checkbox h-4 w-4"
+            />
+          </div>
+
           {/* Designer Filter */}
           <select 
             className="p-2 border rounded"
@@ -124,11 +93,20 @@ export default function DesignerFlowClientComponent({ initialJobs, designerProfi
             ))}
           </select>
 
-          <button onClick={() => setIsNewJobDialogOpen(true)} className="p-2 bg-primary text-primary-foreground rounded">Add Job (Opens Dialog)</button>
-          <button onClick={handleRefresh} className="ml-2 p-2 bg-secondary text-secondary-foreground rounded">Refresh</button>
-          {Object.keys(unsavedChanges).length > 0 && (
-             <button onClick={handleSaveChanges} className="ml-2 p-2 bg-destructive text-destructive-foreground rounded">Save Changes</button>
-          )}
+          <button 
+            onClick={() => setIsNewJobDialogOpen(true)} 
+            className="p-2 bg-primary text-primary-foreground rounded"
+            disabled={isLoading}
+          >
+            Add Job
+          </button>
+          <button 
+            onClick={handleRefresh} 
+            className="ml-2 p-2 bg-secondary text-secondary-foreground rounded"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Refreshing...' : 'Refresh'}
+          </button>
         </div>
       </div>
 

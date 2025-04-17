@@ -1,10 +1,12 @@
 [build]
-  command = "CI=false npm run build"
+  command = "npm run check-all && CI=false npm run build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"
   NEXT_TELEMETRY_DISABLED = "1"
+  NEXT_USE_NETLIFY_EDGE = "true"
+  NEXT_FORCE_EDGE_IMAGES = "true"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -29,5 +31,20 @@
   [plugins.inputs]
     paths = [
       ".next/cache",          # Next.js build cache
-      "node_modules/.cache"   # Node modules cache
-    ] 
+      "node_modules/.cache",  # Node modules cache
+      ".cache",              # Netlify cache directory
+      "public/sw.js",        # Service worker cache
+      ".yarn-cache",         # Yarn cache if using Yarn
+      "build-cache"          # Custom build cache directory
+    ]
+
+# Cache Control headers for static assets
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable" 
