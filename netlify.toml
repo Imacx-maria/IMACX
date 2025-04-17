@@ -29,19 +29,6 @@
 [build.processing.images]
   compress = true
 
-# Cache configuration
-[[plugins]]
-  package = "netlify-plugin-cache"
-  [plugins.inputs]
-    paths = [
-      ".next/cache",          # Next.js build cache
-      "node_modules/.cache",  # Node modules cache
-      ".cache",              # Netlify cache directory
-      "public/sw.js",        # Service worker cache
-      ".yarn-cache",         # Yarn cache if using Yarn
-      "build-cache"          # Custom build cache directory
-    ]
-
 # Cache Control headers for static assets
 [[headers]]
   for = "/_next/static/*"
