@@ -110,45 +110,67 @@ export default function DesignerFlowClientComponent({ initialJobs, designerProfi
       <div className="mb-4 p-4 border rounded bg-card text-card-foreground">
         <p>Header Controls Placeholder</p>
         {/* Filters (Switch, Input), Buttons (Add, Refresh, Save) go here */}
-        <button onClick={() => setIsNewJobDialogOpen(true)} className="p-2 bg-primary text-primary-foreground rounded">Add Job (Opens Dialog)</button>
-        <button onClick={handleRefresh} className="ml-2 p-2 bg-secondary text-secondary-foreground rounded">Refresh</button>
-        {Object.keys(unsavedChanges).length > 0 && (
-           <button onClick={handleSaveChanges} className="ml-2 p-2 bg-destructive text-destructive-foreground rounded">Save Changes</button>
-        )}
+        <div className="flex items-center space-x-4 mb-4">
+          {/* Designer Filter */}
+          <select 
+            className="p-2 border rounded"
+            onChange={(e) => console.log('Selected designer:', e.target.value)}
+          >
+            <option value="">All Designers</option>
+            {designers.map((designer) => (
+              <option key={designer.id} value={designer.id}>
+                {designer.first_name || 'Unnamed'}
+              </option>
+            ))}
+          </select>
+
+          <button onClick={() => setIsNewJobDialogOpen(true)} className="p-2 bg-primary text-primary-foreground rounded">Add Job (Opens Dialog)</button>
+          <button onClick={handleRefresh} className="ml-2 p-2 bg-secondary text-secondary-foreground rounded">Refresh</button>
+          {Object.keys(unsavedChanges).length > 0 && (
+             <button onClick={handleSaveChanges} className="ml-2 p-2 bg-destructive text-destructive-foreground rounded">Save Changes</button>
+          )}
+        </div>
       </div>
 
       {/* TODO: Implement JobTable Component */}
       <div className="border rounded">
         <p>Job Table Placeholder</p>
         {/* Pass filteredJobs, designers, setUnsavedChanges etc. to JobTable */}
-        <pre className="text-xs bg-muted p-2 rounded overflow-auto max-h-60">
-            {JSON.stringify(filteredJobs.slice(0, 5), null, 2)}
-            {filteredJobs.length > 5 ? '\n...' : ''}
-        </pre>
+        <div className="p-4">
+          <h3 className="font-semibold mb-2">Jobs and Assigned Designers:</h3>
+          {filteredJobs.map((job) => {
+            const assignedDesigner = designers.find(d => d.id === job.profile_id);
+            return (
+              <div key={job.id} className="mb-2 p-2 border rounded">
+                <p>FO: {job.numero_fo}</p>
+                <p>Designer: {assignedDesigner?.first_name || 'Unassigned'}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* TODO: Implement NewJobDialog Component (using Shadcn Dialog) */}
-      {/*
-      <Dialog open={isNewJobDialogOpen} onOpenChange={setIsNewJobDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add New Job</DialogTitle>
-          </DialogHeader>
-          <p>New Job Form Placeholder</p>
-          {/* Form using react-hook-form calling a server action on submit */}
-      {/*
-        </DialogContent>
-      </Dialog>
-      */}
-       {isNewJobDialogOpen && (
-         <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center" onClick={() => setIsNewJobDialogOpen(false)}>
-            <div className="bg-background p-6 rounded-lg shadow-lg z-50 w-1/2" onClick={e => e.stopPropagation()}>
-                <h2 className="text-lg font-semibold mb-4">Add New Job (Dialog Placeholder)</h2>
-                <p>Form content goes here...</p>
-                <button onClick={() => setIsNewJobDialogOpen(false)} className="mt-4 p-2 bg-secondary text-secondary-foreground rounded">Close</button>
+      {isNewJobDialogOpen && (
+        <div className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center" onClick={() => setIsNewJobDialogOpen(false)}>
+          <div className="bg-background p-6 rounded-lg shadow-lg z-50 w-1/2" onClick={e => e.stopPropagation()}>
+            <h2 className="text-lg font-semibold mb-4">Add New Job (Dialog Placeholder)</h2>
+            <div className="mb-4">
+              <label className="block mb-2">Assign Designer:</label>
+              <select className="w-full p-2 border rounded">
+                <option value="">Select Designer</option>
+                {designers.map((designer) => (
+                  <option key={designer.id} value={designer.id}>
+                    {designer.first_name || 'Unnamed'}
+                  </option>
+                ))}
+              </select>
             </div>
-         </div>
-       )}
+            <p>Form content goes here...</p>
+            <button onClick={() => setIsNewJobDialogOpen(false)} className="mt-4 p-2 bg-secondary text-secondary-foreground rounded">Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
