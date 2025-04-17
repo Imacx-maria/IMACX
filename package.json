@@ -73,7 +73,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint": "^9",
+    "eslint": "^8.56.0",
     "eslint-config-next": "15.2.4",
     "netlify-plugin-cache": "^1.0.3",
     "prettier": "^3.5.3",
