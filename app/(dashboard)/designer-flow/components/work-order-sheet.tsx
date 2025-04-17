@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { Trash2, Pencil } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter, SheetClose } from '@/components/ui/sheet';
 
 // --- Zod Schema Definition ---
 
@@ -108,212 +109,231 @@ export function WorkOrderSheet({ isOpen, onOpenChange, initialData }: WorkOrderS
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="numero_fo"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>FO</FormLabel>
-                <FormControl>
-                  <Input {...field} type="number" placeholder="1045" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="nome_campanha"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome Campanha</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Nome Campanha" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+      <SheetContent className="w-full max-w-4xl sm:max-w-[90vw] overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle>Work Order</SheetTitle>
+        </SheetHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="numero_fo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>FO</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="number" placeholder="1045" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="nome_campanha"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome Campanha</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Nome Campanha" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-        <div className="flex justify-between">
-          <Button type="button" onClick={handleAddItem}>Adicionar Items</Button>
-          <Button type="submit">Salvar</Button>
-        </div>
+            <div className="flex justify-between">
+              <Button type="button" onClick={handleAddItem}>Adicionar Items</Button>
+              <div className="flex gap-2">
+                <SheetClose asChild>
+                  <Button variant="outline" type="button">Cancel</Button>
+                </SheetClose>
+                <Button type="submit">Salvar</Button>
+              </div>
+            </div>
 
-        <div className="border rounded-lg overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b bg-muted/50">
-                <th className="text-left p-2 font-normal">Item</th>
-                <th className="text-left p-2 font-normal">Código</th>
-                <th className="text-center p-2 font-normal">Em Curso</th>
-                <th className="text-center p-2 font-normal">Dúvidas</th>
-                <th className="text-center p-2 font-normal">Maquete</th>
-                <th className="text-center p-2 font-normal">Paginação</th>
-                <th className="text-left p-2 font-normal">Data Saída</th>
-                <th className="text-left p-2 font-normal">Path</th>
-                <th className="text-left p-2 font-normal">Notas</th>
-                <th className="text-center p-2 font-normal">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fields.map((field, index) => (
-                <tr key={field.id} className="border-b">
-                  <td className="p-2">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.descricao`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input {...field} placeholder="HPT00104631 ABRIL- SAGRES - REPETICAO - Forra Ilha ½ palete" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.codigo`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input {...field} placeholder="CM SCC0134" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2 text-center">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.em_curso`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2 text-center">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.duvidas`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2 text-center">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.maquete_enviada`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2 text-center">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.paginacao`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.data_saida`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input {...field} type="text" placeholder="04/10/2025 11:06" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.path_trabalho`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input {...field} placeholder="D:/Central/Sagres/djckshvkashvlavalf/dsfadf" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2">
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.notas`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea {...field} placeholder="You are a..." className="min-h-[60px]" />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </td>
-                  <td className="p-2">
-                    <div className="flex justify-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        type="button"
-                        onClick={() => remove(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                      <Button variant="ghost" size="icon" type="button">
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </form>
-    </Form>
+            <div className="border rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="text-left p-2 font-normal">Item</th>
+                    <th className="text-left p-2 font-normal">Código</th>
+                    <th className="text-center p-2 font-normal">Em Curso</th>
+                    <th className="text-center p-2 font-normal">Dúvidas</th>
+                    <th className="text-center p-2 font-normal">Maquete</th>
+                    <th className="text-center p-2 font-normal">Paginação</th>
+                    <th className="text-left p-2 font-normal">Data Saída</th>
+                    <th className="text-left p-2 font-normal">Path</th>
+                    <th className="text-left p-2 font-normal">Notas</th>
+                    <th className="text-center p-2 font-normal">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {fields.map((field, index) => (
+                    <tr key={field.id} className="border-b">
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.descricao`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input {...field} placeholder="HPT00104631 ABRIL- SAGRES - REPETICAO - Forra Ilha ½ palete" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.codigo`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input {...field} placeholder="CM SCC0134" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2 text-center">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.em_curso`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2 text-center">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.duvidas`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2 text-center">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.maquete_enviada`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2 text-center">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.paginacao`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.data_saida`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input {...field} type="text" placeholder="04/10/2025 11:06" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.path_trabalho`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input {...field} placeholder="D:/Central/Sagres/djckshvkashvlavalf/dsfadf" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2">
+                        <FormField
+                          control={form.control}
+                          name={`items.${index}.notas`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Textarea {...field} placeholder="You are a..." className="min-h-[60px]" />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </td>
+                      <td className="p-2">
+                        <div className="flex justify-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            type="button"
+                            onClick={() => remove(index)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" type="button">
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <SheetFooter>
+              <SheetClose asChild>
+                <Button variant="outline" type="button">Cancel</Button>
+              </SheetClose>
+              <Button type="submit">Salvar</Button>
+            </SheetFooter>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
   );
 }
