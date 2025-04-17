@@ -195,288 +195,294 @@ function DesignerFlowContent() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Filters Section */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id="open-works"
-            checked={showOpenOnly}
-            onCheckedChange={setShowOpenOnly}
-          />
-          <Label htmlFor="open-works">Trabalhos em aberto</Label>
-        </div>
-        
-        <div className="flex items-center space-x-4">
-          <Select value={selectedDesigner} onValueChange={setSelectedDesigner}>
-            <SelectTrigger className="w-[200px]">
-              <SelectValue placeholder="Selecione Designer" />
-            </SelectTrigger>
-            <SelectContent>
-              {designers.map((designer) => (
-                <SelectItem key={designer.id} value={designer.id}>
-                  {designer.first_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Input
-            placeholder="Filtrar FO"
-            value={foFilter}
-            onChange={(e) => setFoFilter(e.target.value)}
-            className="w-[150px]"
-          />
-
-          <Input
-            placeholder="Filtrar Item"
-            value={itemFilter}
-            onChange={(e) => setItemFilter(e.target.value)}
-            className="w-[150px]"
-          />
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <Button variant="outline">
-            Salvar
-          </Button>
-          <Button onClick={() => {
-            setSelectedWorkOrder(null);
-            setIsDrawerOpen(true);
-          }}>
-            Novo Trabalho
-          </Button>
-        </div>
-      </div>
-
-      {/* Work Orders Table */}
-      <div className="border rounded-lg">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="px-4 py-3 text-left font-normal">Data In</th>
-              <th className="px-4 py-3 text-left font-normal">FO</th>
-              <th className="px-4 py-3 text-left font-normal">Designer</th>
-              <th className="px-4 py-3 text-left font-normal">Nome Campanha</th>
-              <th className="px-4 py-3 text-left font-normal">Status</th>
-              <th className="px-4 py-3 text-left font-normal">Data Saída</th>
-              <th className="px-4 py-3 text-center font-normal">Prioridade</th>
-              <th className="px-4 py-3 text-right font-normal">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {workOrders.map((order) => (
-              <tr key={order.id} className="border-b">
-                <td className="px-4 py-3">{new Date(order.data_in).toLocaleDateString()}</td>
-                <td className="px-4 py-3">{order.numero_fo}</td>
-                <td className="px-4 py-3">{order.profiles?.first_name}</td>
-                <td className="px-4 py-3">{order.nome_campanha}</td>
-                <td className="px-4 py-3">
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-black rounded-full h-2" 
-                      style={{ width: `${calculateProgress(order)}%` }}
-                    />
-                  </div>
-                </td>
-                <td className="px-4 py-3">{order.data_saida ? new Date(order.data_saida).toLocaleDateString() : '-'}</td>
-                <td className="px-4 py-3 text-center">
-                  {order.prioridade && (
-                    <div className="w-3 h-3 bg-red-500 rounded-sm mx-auto" />
-                  )}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  <div className="flex items-center justify-end space-x-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setSelectedWorkOrder(order);
-                        setIsDrawerOpen(true);
-                      }}
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon">
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Work Order Drawer */}
-      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        <DrawerContent className="dark:bg-[#121212] bg-white dark:text-white text-black h-[85vh] overflow-y-auto">
-          <div className="p-4">
-            <h2 className="text-base font-normal mb-4">Novo Trabalho</h2>
-            
-            <div className="flex gap-4 mb-4">
-              <div className="w-[100px] flex-shrink-0">
-                <label className="text-sm dark:text-gray-400 text-gray-600">FO</label>
-                <Input 
-                  value={newWorkOrder.fo}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '').slice(0, 5);
-                    setNewWorkOrder(prev => ({ ...prev, fo: value }))
-                  }}
-                  className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black"
-                  placeholder="1045"
-                  maxLength={5}
-                />
-              </div>
-              <div className="flex-1">
-                <label className="text-sm dark:text-gray-400 text-gray-600">Nome Campanha</label>
-                <Input 
-                  value={newWorkOrder.nome_campanha}
-                  onChange={(e) => setNewWorkOrder(prev => ({ ...prev, nome_campanha: e.target.value }))}
-                  className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black w-full"
-                  placeholder="Nome Campanha"
-                />
-              </div>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          {/* Filters Section */}
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="open-works"
+                checked={showOpenOnly}
+                onCheckedChange={setShowOpenOnly}
+              />
+              <Label htmlFor="open-works">Trabalhos em aberto</Label>
             </div>
+            
+            <div className="flex items-center space-x-4">
+              <Select value={selectedDesigner} onValueChange={setSelectedDesigner}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue placeholder="Selecione Designer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {designers.map((designer) => (
+                    <SelectItem key={designer.id} value={designer.id}>
+                      {designer.first_name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <div className="mb-4">
-              <label className="text-sm dark:text-gray-400 text-gray-600">Notas</label>
-              <Textarea
-                value={newWorkOrder.notas || ''}
-                onChange={(e) => setNewWorkOrder(prev => ({ ...prev, notas: e.target.value }))}
-                className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black min-h-[60px]"
-                placeholder="Notas gerais do trabalho..."
+              <Input
+                placeholder="Filtrar FO"
+                value={foFilter}
+                onChange={(e) => setFoFilter(e.target.value)}
+                className="w-[150px]"
+              />
+
+              <Input
+                placeholder="Filtrar Item"
+                value={itemFilter}
+                onChange={(e) => setItemFilter(e.target.value)}
+                className="w-[150px]"
               />
             </div>
 
-            <div className="flex justify-between mb-4">
-              <Button 
-                onClick={handleAddItem}
-                className="bg-[#F59E0B] text-black hover:bg-[#F59E0B]/90"
-              >
-                Adicionar Items
-              </Button>
-              <Button 
-                className="bg-[#F59E0B] text-black hover:bg-[#F59E0B]/90"
-              >
+            <div className="flex items-center space-x-4">
+              <Button variant="outline">
                 Salvar
               </Button>
-            </div>
-
-            <div className="border dark:border-gray-800 border-gray-200 rounded overflow-x-auto">
-              <table className="w-full">
-                <thead className="sticky top-0 dark:bg-[#121212] bg-white">
-                  <tr className="border-b dark:border-gray-800 border-gray-200">
-                    <th className="p-2 text-left font-normal text-sm dark:text-gray-400 text-gray-600 w-[35%]">Item</th>
-                    <th className="p-2 text-left font-normal text-sm dark:text-gray-400 text-gray-600 w-[15%]">Código</th>
-                    <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[40px]">C</th>
-                    <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[40px]">D</th>
-                    <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[40px]">M</th>
-                    <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[40px]">P</th>
-                    <th className="p-2 text-left font-normal text-sm dark:text-gray-400 text-gray-600 w-[100px]">Data Saída</th>
-                    <th className="p-2 text-left font-normal text-sm dark:text-gray-400 text-gray-600 w-[25%]">Path</th>
-                    <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[60px]">Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {newWorkItems.map((item, index) => (
-                    <tr key={item.id} className="border-b dark:border-gray-800 border-gray-200">
-                      <td className="p-2">
-                        <Input
-                          value={item.descricao}
-                          onChange={(e) => handleItemChange(index, 'descricao', e.target.value)}
-                          className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black w-full"
-                          placeholder="HPT00104631 ABRIL- SAGRES - REPETICAO - Forra Ilha ½ palete"
-                        />
-                      </td>
-                      <td className="p-2">
-                        <Input
-                          value={item.codigo || ''}
-                          onChange={(e) => handleItemChange(index, 'codigo', e.target.value)}
-                          className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black w-full"
-                          placeholder="CM SCC0134"
-                        />
-                      </td>
-                      <td className="p-2 text-center">
-                        <div className="flex justify-center">
-                          <div className={`w-5 h-5 flex items-center justify-center rounded border-2 cursor-pointer ${item.em_curso ? 'bg-[#F59E0B] border-[#F59E0B]' : 'dark:border-gray-600 border-gray-400 bg-transparent'}`} onClick={() => handleItemChange(index, 'em_curso', !item.em_curso)}>
-                            {item.em_curso && <div className="w-2 h-2 bg-white rounded-full" />}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-2 text-center">
-                        <div className="flex justify-center">
-                          <div className={`w-5 h-5 flex items-center justify-center rounded border-2 cursor-pointer ${item.duvidas ? 'bg-[#F59E0B] border-[#F59E0B]' : 'dark:border-gray-600 border-gray-400 bg-transparent'}`} onClick={() => handleItemChange(index, 'duvidas', !item.duvidas)}>
-                            {item.duvidas && <div className="w-2 h-2 bg-white rounded-full" />}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-2 text-center">
-                        <div className="flex justify-center">
-                          <div className={`w-5 h-5 flex items-center justify-center rounded border-2 cursor-pointer ${item.maquete_enviada ? 'bg-[#F59E0B] border-[#F59E0B]' : 'dark:border-gray-600 border-gray-400 bg-transparent'}`} onClick={() => handleItemChange(index, 'maquete_enviada', !item.maquete_enviada)}>
-                            {item.maquete_enviada && <div className="w-2 h-2 bg-white rounded-full" />}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-2 text-center">
-                        <div className="flex justify-center">
-                          <div className={`w-5 h-5 flex items-center justify-center rounded border-2 cursor-pointer ${item.paginacao ? 'bg-[#F59E0B] border-[#F59E0B]' : 'dark:border-gray-600 border-gray-400 bg-transparent'}`} onClick={() => handleItemChange(index, 'paginacao', !item.paginacao)}>
-                            {item.paginacao && <div className="w-2 h-2 bg-white rounded-full" />}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="p-2 dark:text-gray-400 text-gray-600">{item.data_saida || '-'}</td>
-                      <td className="p-2">
-                        <Input
-                          value={item.path_trabalho || ''}
-                          onChange={(e) => handleItemChange(index, 'path_trabalho', e.target.value)}
-                          className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black w-full"
-                          placeholder="D:/Central/Sagres/..."
-                        />
-                      </td>
-                      <td className="p-2">
-                        <div className="flex justify-center gap-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => openDeleteDialog(index)}
-                            className="hover:bg-red-500/10"
-                          >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <Button onClick={() => {
+                setSelectedWorkOrder(null);
+                setIsDrawerOpen(true);
+              }}>
+                Novo Trabalho
+              </Button>
             </div>
           </div>
-        </DrawerContent>
-      </Drawer>
-      
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="dark:bg-[#1A1A1A] bg-white dark:text-white text-black">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="dark:text-white text-black">Confirmar eliminação</AlertDialogTitle>
-            <AlertDialogDescription className="dark:text-gray-400 text-gray-600">
-              Esta ação vai eliminar permanentemente a linha
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">CANCELAR</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => itemToDelete !== null && handleDeleteItem(itemToDelete)}
-              className="bg-red-500 text-white hover:bg-red-600"
-            >
-              SIM
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+
+          {/* Work Orders Table */}
+          <div className="border rounded-lg">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b">
+                  <th className="px-4 py-3 text-left font-normal">Data In</th>
+                  <th className="px-4 py-3 text-left font-normal">FO</th>
+                  <th className="px-4 py-3 text-left font-normal">Designer</th>
+                  <th className="px-4 py-3 text-left font-normal">Nome Campanha</th>
+                  <th className="px-4 py-3 text-left font-normal">Status</th>
+                  <th className="px-4 py-3 text-left font-normal">Data Saída</th>
+                  <th className="px-4 py-3 text-center font-normal">Prioridade</th>
+                  <th className="px-4 py-3 text-right font-normal">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {workOrders.map((order) => (
+                  <tr key={order.id} className="border-b">
+                    <td className="px-4 py-3">{new Date(order.data_in).toLocaleDateString()}</td>
+                    <td className="px-4 py-3">{order.numero_fo}</td>
+                    <td className="px-4 py-3">{order.profiles?.first_name}</td>
+                    <td className="px-4 py-3">{order.nome_campanha}</td>
+                    <td className="px-4 py-3">
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-black rounded-full h-2" 
+                          style={{ width: `${calculateProgress(order)}%` }}
+                        />
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">{order.data_saida ? new Date(order.data_saida).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3 text-center">
+                      {order.prioridade && (
+                        <div className="w-3 h-3 bg-red-500 rounded-sm mx-auto" />
+                      )}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setSelectedWorkOrder(order);
+                            setIsDrawerOpen(true);
+                          }}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon">
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Work Order Drawer */}
+          <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+            <DrawerContent className="dark:bg-[#121212] bg-white dark:text-white text-black h-[85vh] overflow-y-auto">
+              <div className="p-4">
+                <h2 className="text-base font-normal mb-4">Novo Trabalho</h2>
+                
+                <div className="flex gap-4 mb-4">
+                  <div className="w-[100px] flex-shrink-0">
+                    <label className="text-sm dark:text-gray-400 text-gray-600">FO</label>
+                    <Input 
+                      value={newWorkOrder.fo}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '').slice(0, 5);
+                        setNewWorkOrder(prev => ({ ...prev, fo: value }))
+                      }}
+                      className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black"
+                      placeholder="1045"
+                      maxLength={5}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-sm dark:text-gray-400 text-gray-600">Nome Campanha</label>
+                    <Input 
+                      value={newWorkOrder.nome_campanha}
+                      onChange={(e) => setNewWorkOrder(prev => ({ ...prev, nome_campanha: e.target.value }))}
+                      className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black w-full"
+                      placeholder="Nome Campanha"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label className="text-sm dark:text-gray-400 text-gray-600">Notas</label>
+                  <Textarea
+                    value={newWorkOrder.notas || ''}
+                    onChange={(e) => setNewWorkOrder(prev => ({ ...prev, notas: e.target.value }))}
+                    className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black min-h-[60px]"
+                    placeholder="Notas gerais do trabalho..."
+                  />
+                </div>
+
+                <div className="flex justify-between mb-4">
+                  <Button 
+                    onClick={handleAddItem}
+                    className="bg-[#F59E0B] text-black hover:bg-[#F59E0B]/90"
+                  >
+                    Adicionar Items
+                  </Button>
+                  <Button 
+                    className="bg-[#F59E0B] text-black hover:bg-[#F59E0B]/90"
+                  >
+                    Salvar
+                  </Button>
+                </div>
+
+                <div className="border dark:border-gray-800 border-gray-200 rounded overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="sticky top-0 dark:bg-[#121212] bg-white">
+                      <tr className="border-b dark:border-gray-800 border-gray-200">
+                        <th className="p-2 text-left font-normal text-sm dark:text-gray-400 text-gray-600 w-[35%]">Item</th>
+                        <th className="p-2 text-left font-normal text-sm dark:text-gray-400 text-gray-600 w-[15%]">Código</th>
+                        <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[40px]">C</th>
+                        <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[40px]">D</th>
+                        <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[40px]">M</th>
+                        <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[40px]">P</th>
+                        <th className="p-2 text-left font-normal text-sm dark:text-gray-400 text-gray-600 w-[100px]">Data Saída</th>
+                        <th className="p-2 text-left font-normal text-sm dark:text-gray-400 text-gray-600 w-[25%]">Path</th>
+                        <th className="p-2 text-center font-normal text-sm dark:text-gray-400 text-gray-600 w-[60px]">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {newWorkItems.map((item, index) => (
+                        <tr key={item.id} className="border-b dark:border-gray-800 border-gray-200">
+                          <td className="p-2">
+                            <Input
+                              value={item.descricao}
+                              onChange={(e) => handleItemChange(index, 'descricao', e.target.value)}
+                              className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black w-full"
+                              placeholder="HPT00104631 ABRIL- SAGRES - REPETICAO - Forra Ilha ½ palete"
+                            />
+                          </td>
+                          <td className="p-2">
+                            <Input
+                              value={item.codigo || ''}
+                              onChange={(e) => handleItemChange(index, 'codigo', e.target.value)}
+                              className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black w-full"
+                              placeholder="CM SCC0134"
+                            />
+                          </td>
+                          <td className="p-2 text-center">
+                            <div className="flex justify-center">
+                              <div className={`w-5 h-5 flex items-center justify-center rounded border-2 cursor-pointer ${item.em_curso ? 'bg-[#F59E0B] border-[#F59E0B]' : 'dark:border-gray-600 border-gray-400 bg-transparent'}`} onClick={() => handleItemChange(index, 'em_curso', !item.em_curso)}>
+                                {item.em_curso && <div className="w-2 h-2 bg-white rounded-full" />}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-2 text-center">
+                            <div className="flex justify-center">
+                              <div className={`w-5 h-5 flex items-center justify-center rounded border-2 cursor-pointer ${item.duvidas ? 'bg-[#F59E0B] border-[#F59E0B]' : 'dark:border-gray-600 border-gray-400 bg-transparent'}`} onClick={() => handleItemChange(index, 'duvidas', !item.duvidas)}>
+                                {item.duvidas && <div className="w-2 h-2 bg-white rounded-full" />}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-2 text-center">
+                            <div className="flex justify-center">
+                              <div className={`w-5 h-5 flex items-center justify-center rounded border-2 cursor-pointer ${item.maquete_enviada ? 'bg-[#F59E0B] border-[#F59E0B]' : 'dark:border-gray-600 border-gray-400 bg-transparent'}`} onClick={() => handleItemChange(index, 'maquete_enviada', !item.maquete_enviada)}>
+                                {item.maquete_enviada && <div className="w-2 h-2 bg-white rounded-full" />}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-2 text-center">
+                            <div className="flex justify-center">
+                              <div className={`w-5 h-5 flex items-center justify-center rounded border-2 cursor-pointer ${item.paginacao ? 'bg-[#F59E0B] border-[#F59E0B]' : 'dark:border-gray-600 border-gray-400 bg-transparent'}`} onClick={() => handleItemChange(index, 'paginacao', !item.paginacao)}>
+                                {item.paginacao && <div className="w-2 h-2 bg-white rounded-full" />}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-2 dark:text-gray-400 text-gray-600">{item.data_saida || '-'}</td>
+                          <td className="p-2">
+                            <Input
+                              value={item.path_trabalho || ''}
+                              onChange={(e) => handleItemChange(index, 'path_trabalho', e.target.value)}
+                              className="dark:bg-[#1A1A1A] bg-gray-50 dark:border-0 border dark:text-white text-black w-full"
+                              placeholder="D:/Central/Sagres/..."
+                            />
+                          </td>
+                          <td className="p-2">
+                            <div className="flex justify-center gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => openDeleteDialog(index)}
+                                className="hover:bg-red-500/10"
+                              >
+                                <Trash2 className="h-4 w-4 text-red-500" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </DrawerContent>
+          </Drawer>
+          
+          {/* Delete Confirmation Dialog */}
+          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <AlertDialogContent className="dark:bg-[#1A1A1A] bg-white dark:text-white text-black">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="dark:text-white text-black">Confirmar eliminação</AlertDialogTitle>
+                <AlertDialogDescription className="dark:text-gray-400 text-gray-600">
+                  Esta ação vai eliminar permanentemente a linha
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700">CANCELAR</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={() => itemToDelete !== null && handleDeleteItem(itemToDelete)}
+                  className="bg-red-500 text-white hover:bg-red-600"
+                >
+                  SIM
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
+      )}
     </div>
   );
 }
