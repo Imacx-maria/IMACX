@@ -78,7 +78,6 @@ function DesignerFlowContent() {
   const [selectedDesigner, setSelectedDesigner] = useState('');
   const [foFilter, setFoFilter] = useState('');
   const [itemFilter, setItemFilter] = useState('');
-  const [selectedWorkOrder, setSelectedWorkOrder] = useState<WorkOrder | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<number | null>(null);
@@ -139,30 +138,6 @@ function DesignerFlowContent() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSave = async () => {
-    setIsLoading(true);
-    try {
-      // Update work orders that have been modified
-      // Implementation needed based on what fields can be edited
-      await fetchWorkOrders(); // Refresh data after save
-    } catch (error) {
-      console.error('Error saving changes:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    setSelectedWorkOrder(null);
-    setIsDrawerOpen(false);
-  };
-
-  const calculateStatus = (items: WorkOrder['items']) => {
-    if (!items || items.length === 0) return 0;
-    const completed = items.filter(item => item.paginacao).length;
-    return Math.round((completed / items.length) * 100);
   };
 
   const handleAddItem = () => {
@@ -244,7 +219,6 @@ function DesignerFlowContent() {
                 Salvar
               </Button>
               <Button onClick={() => {
-                setSelectedWorkOrder(null);
                 setIsDrawerOpen(true);
               }}>
                 Novo Trabalho
@@ -294,7 +268,6 @@ function DesignerFlowContent() {
                           variant="ghost"
                           size="icon"
                           onClick={() => {
-                            setSelectedWorkOrder(order);
                             setIsDrawerOpen(true);
                           }}
                         >
