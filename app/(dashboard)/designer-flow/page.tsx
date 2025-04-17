@@ -11,7 +11,6 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Trash2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { WorkOrderSheet } from './components/work-order-sheet';
 import { supabase } from "@/lib/supabase/client";
 import {
   Dialog,
