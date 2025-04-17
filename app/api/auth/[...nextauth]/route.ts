@@ -25,7 +25,7 @@ const { handlers } = NextAuth({
       async authorize(credentials) { // Removed explicit type here, let TS infer
         if (!credentials?.email || !credentials?.password) return null
 
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findFirst({
           where: { email: credentials.email },
           select: { id: true, email: true, name: true, role: true, password: true }
         })
