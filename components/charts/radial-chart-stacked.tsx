@@ -78,6 +78,7 @@ export function RadialChartStacked() { // Renamed component function
                       </text>
                     )
                   }
+                  return null;
                 }}
               />
             </PolarRadiusAxis>
