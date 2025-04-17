@@ -9,7 +9,7 @@ export async function GET() {
 
     for (const tableName of tablesToTest) {
       try {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from(tableName)
           .select('*')
           .limit(1);
@@ -37,7 +37,7 @@ export async function GET() {
     try {
       // You can't query information_schema directly with limited permissions,
       // so try a SELECT with column names to test their existence
-      const { error } = await supabase
+      const { error: columnCheckError } = await supabase
         .from('folhas_obras')
         .select('id, numero_fo, profile_id, nome_campanha, prioridade, data_in, data_saida, created_at, updated_at, notas')
         .limit(0);
@@ -54,7 +54,7 @@ export async function GET() {
         updated_at: true,
         notas: true
       };
-      folhasObrasColumnsError = error;
+      folhasObrasColumnsError = columnCheckError;
     } catch (e) {
       folhasObrasColumnsError = e instanceof Error ? e.message : String(e);
     }
