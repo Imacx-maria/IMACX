@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { format, startOfWeek, addDays, startOfMonth, endOfMonth, isSameMonth, isSameDay } from "date-fns";
+import { format, startOfWeek, addDays, startOfMonth, isSameMonth, isSameDay } from "date-fns";
 
 export interface CalendarHeatmapData {
   date: Date;
