@@ -107,6 +107,7 @@ export function PieChartDonutText() { // Renamed component function
                       </text>
                     )
                   }
+                  return null;
                 }}
               />
             </Pie>
