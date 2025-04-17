@@ -14,10 +14,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { DesignerInfo, WorkOrderWithDetails } from '../actions'; // Import types from actions
-import { Edit2, Trash2, MoreVertical } from 'lucide-react'; // Icons
+import { Edit2, Trash2 } from 'lucide-react'; // Icons
 
 // Define props for the component
 interface WorkOrderTableProps {
@@ -139,18 +138,6 @@ export function WorkOrderTable({
                     <Button variant="ghost" size="icon" onClick={() => setDeleteConfirmId(wo.id)}>
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
-                    {/* Optional: Dropdown for more actions if needed */}
-                    {/* <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreVertical className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => onEditWorkOrder(wo)}>Edit</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setDeleteConfirmId(wo.id)} className="text-destructive">Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu> */}
                   </TableCell>
                 </TableRow>
               ))
