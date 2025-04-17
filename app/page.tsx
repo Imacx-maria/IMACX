@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth/auth-context";
 import Link from "next/link";
 import { navigationItems } from "@/lib/config/navigation";
 import { DashboardHeader } from "@/components/layout/dashboard-header"; // Import the header
-import { CardWithGlow } from "@/components/ui/card-with-glow";
+import { CardWithGradientBorder } from "@/components/ui/card-with-gradient-border";
 import { 
   ChartPie, 
   PackageOpen, 
@@ -61,9 +61,8 @@ function DashboardCard({
 
   return (
     <Link href={link} className="block h-full">
-      <CardWithGlow 
+      <CardWithGradientBorder 
         className="hover:bg-accent/10 transition-colors h-[280px] text-center flex flex-col items-center justify-between z-20 relative p-6"
-        glowProps={{ spread: 25, borderWidth: 1 }}
       >
         <div className="flex-shrink-0 flex justify-center">
           {renderIcon()}
@@ -72,7 +71,7 @@ function DashboardCard({
           <h3 className="font-medium text-lg mb-2 text-foreground">{title}</h3>
           <p className="text-muted-foreground text-sm">{description}</p>
         </div>
-      </CardWithGlow>
+      </CardWithGradientBorder>
     </Link>
   );
 }
