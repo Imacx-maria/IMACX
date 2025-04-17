@@ -1,0 +1,162 @@
+# IMACX Business Suite - Project Rules and Guidelines
+
+## Project Structure
+
+The IMACX Business Suite follows a structured organization to maintain code quality and developer productivity:
+
+```
+imacx-suite/
+├── app/                    # Next.js App Router
+│   ├── (auth)/             # Authentication routes (login, register, etc.)
+│   ├── (dashboard)/        # Dashboard and application routes
+│   ├── api/                # API routes
+│   └── layout.tsx          # Root layout
+├── components/             # React components
+│   ├── forms/              # Form components
+│   ├── ui/                 # UI components (shadcn/ui)
+│   └── ...                 # Other component categories
+├── lib/                    # Utility functions and services
+│   ├── auth/               # Authentication utilities
+│   ├── db/                 # Database utilities
+│   ├── validations/        # Zod schemas and validation
+│   └── ...                 # Other utilities
+├── prisma/                 # Prisma ORM
+│   ├── schema.prisma       # Database schema
+│   └── seed.ts             # Database seed script
+├── public/                 # Static assets
+├── types/                  # TypeScript type definitions
+└── ...                     # Configuration files
+```
+
+## Coding Standards
+
+1. **TypeScript**: Use TypeScript for all code files. Ensure proper typing for all functions, components, and variables.
+
+2. **Component Structure**:
+   - Use functional components with hooks
+   - Keep components focused on a single responsibility
+   - Extract reusable logic into custom hooks
+
+3. **Naming Conventions**:
+   - Components: PascalCase (e.g., `LoginForm.tsx`)
+   - Utilities/Hooks: camelCase (e.g., `useAuth.ts`)
+   - Files: kebab-case for non-component files (e.g., `auth-service.ts`)
+
+4. **Code Formatting**:
+   - Use Prettier for consistent formatting
+   - Follow ESLint rules for code quality
+   - Use meaningful variable and function names
+
+## Authentication and Authorization
+
+1. **User Roles**:
+   - Admin: Full access to all features
+   - Manager: Access to most features except admin-specific ones
+   - Staff: Limited access based on assigned permissions
+
+2. **Protected Routes**:
+   - Use middleware for route protection
+   - Implement role-based access control
+   - Redirect unauthorized users to appropriate pages
+
+## Database Guidelines
+
+1. **Supabase Integration**:
+   - Use Supabase for authentication and database
+   - Implement Row Level Security (RLS) policies
+   - Keep sensitive operations server-side
+
+2. **Prisma ORM**:
+   - Use Prisma for database operations
+   - Keep schema updated with migrations
+   - Use transactions for related operations
+
+## UI/UX Guidelines
+
+1. **Component Library**:
+   - Use shadcn/ui components for consistency
+   - Follow the design system for spacing, colors, and typography
+   - Ensure responsive design for all screen sizes
+
+2. **Accessibility**:
+   - Ensure proper ARIA attributes
+   - Maintain keyboard navigation
+   - Test with screen readers
+
+## Performance Considerations
+
+1. **Data Fetching**:
+   - Use React Query for data fetching and caching
+   - Implement pagination for large data sets
+   - Optimize API calls to minimize network requests
+
+2. **Rendering**:
+   - Use Next.js server components where appropriate
+   - Implement code splitting for large components
+   - Optimize images and assets
+
+## Git Workflow
+
+1. **Branching Strategy**:
+   - `main`: Production-ready code
+   - `develop`: Integration branch
+   - Feature branches: `feature/feature-name`
+   - Bug fixes: `fix/bug-description`
+
+2. **Commit Messages**:
+   - Use conventional commits format
+   - Include ticket/issue numbers when applicable
+   - Keep commits focused and atomic
+
+## Deployment
+
+1. **Environments**:
+   - Development: Local development
+   - Staging: For testing before production
+   - Production: Live environment
+
+2. **Vercel Deployment**:
+   - Configure environment variables
+   - Set up preview deployments
+   - Implement deployment checks
+
+## Documentation
+
+1. **Code Documentation**:
+   - Document complex functions and components
+   - Include JSDoc comments for public APIs
+   - Keep README updated with setup instructions
+
+2. **User Documentation**:
+   - Maintain user guides for each module
+   - Document admin features separately
+   - Include screenshots and examples
+
+## Security Guidelines
+
+1. **Authentication**:
+   - Use secure authentication methods
+   - Implement proper session management
+   - Protect against common vulnerabilities
+
+2. **Data Protection**:
+   - Encrypt sensitive data
+   - Implement proper access controls
+   - Follow data protection regulations
+
+## Testing Strategy
+
+1. **Unit Tests**:
+   - Test individual components and functions
+   - Use Jest and React Testing Library
+   - Aim for high test coverage
+
+2. **Integration Tests**:
+   - Test component interactions
+   - Verify API integrations
+   - Test authentication flows
+
+3. **End-to-End Tests**:
+   - Test complete user journeys
+   - Verify critical business flows
+   - Test across different browsers
