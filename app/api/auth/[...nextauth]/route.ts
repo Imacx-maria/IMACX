@@ -10,7 +10,7 @@ interface UserType { ... }
 interface TokenType extends JWT { ... }
 */
 
-const { handlers, auth, signIn, signOut } = NextAuth({
+const { handlers } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   pages: { signIn: "/login", signOut: "/login", error: "/login" },
